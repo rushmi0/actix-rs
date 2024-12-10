@@ -14,7 +14,7 @@ pub async fn run() -> std::io::Result<()> {
             .wrap(cors_config())
             .configure(v1::service_hub)
     })
-        .bind(("localhost", 8080))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
 }
