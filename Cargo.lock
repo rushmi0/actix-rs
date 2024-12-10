@@ -105,7 +105,6 @@ dependencies = [
  "actix-cors",
  "actix-web",
  "env_logger",
- "http",
 ]
 
 [[package]]
