@@ -3,6 +3,6 @@ use crate::module::greet;
 
 #[get("/{name}")]
 pub async fn hello(name: web::Path<String>) -> impl Responder {
-    let greeting = greet::greet(&name);
+    let greeting = greet(&name);
     HttpResponse::Ok().body(greeting)
 }
