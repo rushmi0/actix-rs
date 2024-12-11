@@ -1,6 +1,6 @@
 use log::info;
 
 pub fn greet(name: &str) -> String {
-    info!("path: {}", name);
+    info!("Receive data: {}", name);
     format!("Hello {}!", name)
 }
