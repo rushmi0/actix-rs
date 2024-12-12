@@ -18,7 +18,10 @@ USER runner
 WORKDIR /app
 
 COPY --from=build --chown=runner:rustapp /builder/target/release/actix-rs ./
-RUN chmod u=rx,g=r,o= /app/actix-rs
+COPY --chown=runner:nostrapp .env /app/.env
+
+RUN chmod u=rx,g=r,o= /app/actix-rs && \
+    chmod u=r,g=,o= /app/.env
 
 EXPOSE 8080
 
