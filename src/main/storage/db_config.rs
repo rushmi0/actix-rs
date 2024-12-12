@@ -1,15 +1,15 @@
-use std::cell::OnceCell;
-use sqlx::{Pool, Postgres};
-use sqlx::postgres::PgPoolOptions;
 use dotenvy::dotenv;
+use log::info;
+use once_cell::sync::OnceCell;
+use sqlx::postgres::PgPoolOptions;
+use sqlx::{Pool, Postgres};
 use std::env;
+use std::time::Duration;
 
-/// ใช้ `OnceCell` เพื่อเก็บข้อมูล Pool แบบ Lazy Static
 static DB_POOL: OnceCell<Pool<Postgres>> = OnceCell::new();
 
-/// กำหนดค่าการเชื่อมต่อฐานข้อมูลและสร้าง Pool
-pub fn initialize_db() {
-    dotenv().ok(); // โหลดค่าจากไฟล์ .env
+pub fn initialize() {
+    dotenv().ok();
 
     let db_url = format!(
         "postgres://{}:{}@{}:{}/{}",
@@ -20,27 +20,31 @@ pub fn initialize_db() {
         env::var("DB_NAME").expect("DB_NAME is not set"),
     );
 
-    let pool = PgPoolOptions::new()
-        .max_connections(32) // จำนวนการเชื่อมต่อสูงสุด
-        .min_connections(16) // การเชื่อมต่อขั้นต่ำ
-        .max_lifetime(std::time::Duration::from_secs(2_000_000))
-        .idle_timeout(Some(std::time::Duration::from_secs(600)))
+    match PgPoolOptions::new()
+        .max_connections(32)
+        .min_connections(16)
+        .max_lifetime(Duration::from_secs(2_000_000))
+        .idle_timeout(Duration::from_secs(600))
         .connect_lazy(&db_url)
-        .expect("Failed to create connection pool");
-
-    DB_POOL.set(pool).expect("Failed to set DB_POOL");
+    {
+        Ok(pool) => {
+            DB_POOL.set(pool).expect("Failed to set DB_POOL");
+            info!("Database initialized successfully");
+        }
+        Err(err) => panic!("Failed to create connection pool: {}", err),
+    }
 }
 
-/// ดึง Pool สำหรับใช้งาน
-pub fn get_pool() -> &'static Pool<Postgres> {
+
+fn get_pool() -> &'static Pool<Postgres> {
     DB_POOL.get().expect("Database pool is not initialized")
 }
 
-/// ใช้ในการรัน Query แบบ Transaction
-pub async fn query_task<F, T>(task: F) -> T
-where
-    F: FnOnce(&Pool<Postgres>) -> T,
-{
+
+pub async fn query_task(script: &str) {
     let pool = get_pool();
-    task(pool)
+    sqlx::query(script)
+        .execute(pool)
+        .await
+        .expect("Failed to execute query");
 }

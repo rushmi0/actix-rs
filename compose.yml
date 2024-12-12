@@ -21,7 +21,7 @@ services:
     networks:
       - dev_nk
     ports:
-      - "5433:5433"
+      - "5433:5432"
   
   actix-app:
     container_name: actix-app
