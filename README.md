@@ -1,18 +1,17 @@
 # Actix-web v4.9.0
 
-This is a Rust-based web application using Actix framework.
+Easily build and deploy web applications with this Actix-web custom template.
 
-
-1. Clone the repository:
+#### Clone the repository:
 
 ```bash
   git clone https://github.com/your-repo/actix-rs.git
   cd actix-rs
 ```
 
-2. Build and run using Docker:
+#### Build and run using Docker:
 ```bash
- docker compose up actix-app
+ docker compose up actix-db actix-app
 ```
 
 
