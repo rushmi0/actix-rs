@@ -1,7 +1,7 @@
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::module::greet;
 use actix_web::{get, web, HttpResponse, Responder};
 use serde::Serialize;
+use crate::module::greet;
 
 #[derive(Serialize)]
 struct Greeting {
@@ -11,7 +11,6 @@ struct Greeting {
 
 #[get("/{name}")]
 pub async fn hello_service(name: web::Path<String>) -> impl Responder {
-
     let greeting_message: String = greet(&name).await;
     let created_at = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -20,7 +19,7 @@ pub async fn hello_service(name: web::Path<String>) -> impl Responder {
 
     let response = Greeting {
         timestamp: created_at,
-        message: greeting_message
+        message: greeting_message,
     };
 
     HttpResponse::Ok().json(response)

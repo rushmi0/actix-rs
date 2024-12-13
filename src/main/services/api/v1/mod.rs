@@ -6,7 +6,6 @@ mod hello;
 use index::index_service;
 use hello::hello_service;
 
-
 pub fn service_hub(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/api/v1")

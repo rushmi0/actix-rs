@@ -24,7 +24,7 @@ pub fn initialize() {
         .max_connections(32)
         .min_connections(16)
         .max_lifetime(Duration::from_secs(2_000_000))
-        .idle_timeout(Duration::from_secs(600))
+        .idle_timeout(Duration::from_secs(6_000))
         .connect_lazy(&db_url)
     {
         Ok(pool) => {
