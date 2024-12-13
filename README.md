@@ -14,6 +14,6 @@ Easily build and deploy web applications with this Actix-web custom template.
  docker compose up actix-db actix-app
 ```
 
-
+- Actix-Web: https://actix.rs
 - Rust: https://www.rust-lang.org
 - Docker: https://docker.com
