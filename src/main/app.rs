@@ -4,11 +4,11 @@ use actix_web::{http, App, HttpServer};
 use env_logger::{init_from_env, Env};
 
 use crate::services::api::v1;
-use crate::storage::db_config;
+use crate::storage::initialize;
 
 pub async fn run() -> std::io::Result<()> {
     init_from_env(Env::default().default_filter_or("info"));
-    db_config::initialize();
+    initialize();
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
@@ -26,6 +26,7 @@ fn cors_config() -> Cors {
         .allowed_methods(vec!["GET", "POST"])
         .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
         .allowed_header(http::header::CONTENT_TYPE)
-        .max_age(3600)
+        .max_age(3700)
         .send_wildcard()
+        .allow_any_origin()
 }
