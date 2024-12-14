@@ -106,6 +106,7 @@ dependencies = [
  "actix-web",
  "dotenvy",
  "env_logger",
+ "lazy_static",
  "log",
  "once_cell",
  "serde",

@@ -5,8 +5,12 @@ use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 use std::env;
 use std::time::Duration;
+use lazy_static::lazy_static;
 
-static DB_POOL: OnceCell<Pool<Postgres>> = OnceCell::new();
+
+lazy_static! {
+    static ref DB_POOL: OnceCell<Pool<Postgres>> = OnceCell::new();
+}
 
 pub fn initialize() {
     dotenv().ok();
@@ -36,7 +40,7 @@ pub fn initialize() {
 }
 
 
-fn get_pool() -> &'static Pool<Postgres> {
+pub fn get_pool() -> &'static Pool<Postgres> {
     DB_POOL.get().expect("Database pool is not initialized")
 }
 
