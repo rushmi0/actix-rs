@@ -1,6 +1,6 @@
 pub mod db_config;
 
 pub use db_config::{
-    initialize,
+    init_db,
     query_task
 };
