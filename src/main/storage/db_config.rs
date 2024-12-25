@@ -12,7 +12,7 @@ lazy_static! {
     static ref DB_POOL: OnceCell<Pool<Postgres>> = OnceCell::new();
 }
 
-pub fn initialize() {
+pub fn init_db() {
     dotenv().ok();
 
     let db_url = format!(
@@ -20,20 +20,20 @@ pub fn initialize() {
         env::var("DB_USER").expect("DB_USER is not set"),
         env::var("DB_PASS").expect("DB_PASS is not set"),
         env::var("DB_HOST").expect("DB_HOST is not set"),
-        env::var("DB_PORT").unwrap_or_else(|_| "5432".to_string()),
+        env::var("DB_PORT").expect("DB_PORT is not set"),
         env::var("DB_NAME").expect("DB_NAME is not set"),
     );
 
     match PgPoolOptions::new()
-        .max_connections(32)
-        .min_connections(16)
+        .max_connections(16)
+        .min_connections(8)
         .max_lifetime(Duration::from_secs(20_000))
         .idle_timeout(Duration::from_secs(6_000))
         .connect_lazy(&db_url)
     {
         Ok(pool) => {
             DB_POOL.set(pool).expect("Failed to set DB_POOL");
-            info!("Database initialized successfully");
+            info!("Database initialized success");
         }
         Err(err) => panic!("Failed to create connection pool: {}", err),
     }
