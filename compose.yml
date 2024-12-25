@@ -1,7 +1,7 @@
 services:
   
   actix-db:
-    container_name: actixdb_local
+    container_name: actix-db
     image: postgres:16-alpine
     env_file:
       - .env

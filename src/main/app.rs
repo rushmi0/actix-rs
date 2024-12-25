@@ -2,7 +2,6 @@ use actix_cors::Cors;
 use actix_web::middleware::Logger;
 use actix_web::{http, App, HttpServer};
 use dotenvy::dotenv;
-use env_logger::{init_from_env, Env};
 use std::env;
 
 use crate::services::api::v1;
@@ -10,10 +9,9 @@ use crate::storage;
 
 pub async fn run() -> std::io::Result<()> {
     dotenv().ok();
-    storage::init_db();
+    storage::init_db().await;
     env_logger::init();
 
-    // ดึงค่า IP และ PORT จาก .env หรือใช้ค่าดีฟอลต์
     let host = env::var("APP_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
     let port = env::var("APP_PORT")
         .unwrap_or_else(|_| "8080".to_string())
