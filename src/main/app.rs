@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
-use actix_web::{http, App, HttpServer};
+use actix_web::{App, HttpServer};
+use actix_web::http::header;
 use dotenvy::dotenv;
 use std::env;
 
@@ -33,8 +34,8 @@ pub async fn run() -> std::io::Result<()> {
 fn cors_config() -> Cors {
     Cors::default()
         .allowed_methods(vec!["GET", "POST"])
-        .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-        .allowed_header(http::header::CONTENT_TYPE)
+        .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+        .allowed_header(header::CONTENT_TYPE)
         .max_age(3700)
         .send_wildcard()
         .allow_any_origin()

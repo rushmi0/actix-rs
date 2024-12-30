@@ -1,10 +1,10 @@
 use dotenvy::dotenv;
 use lazy_static::lazy_static;
-use log::info;
 use once_cell::sync::OnceCell;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{postgres, Error, Pool, Postgres};
 use std::env;
+use log::info;
 use std::time::Duration;
 
 lazy_static! {
@@ -29,7 +29,7 @@ pub async fn init_db() {
 
     match PgPoolOptions::new()
         .max_connections(16)
-        .min_connections(8)
+        .min_connections(4)
         .max_lifetime(Duration::from_secs(20_000))
         .idle_timeout(Duration::from_secs(5_000))
         .connect_with(connect_options)
