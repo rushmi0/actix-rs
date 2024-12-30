@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "actix_rs"
+name = "lib"
 path = "src/main/lib.rs"
 
 [[bin]]
-name = "actix-rs"
+name = "actix_rs"
 path = "src/main/main.rs"
 
 [dependencies]
