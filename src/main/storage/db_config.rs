@@ -2,10 +2,10 @@ use dotenvy::dotenv;
 use lazy_static::lazy_static;
 use once_cell::sync::OnceCell;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
-use sqlx::{postgres, Error, Pool, Postgres};
+use sqlx::{postgres, ConnectOptions, Error, Pool, Postgres};
 use std::env;
-use log::info;
 use std::time::Duration;
+use tracing::{info, warn};
 
 lazy_static! {
     static ref DB_POOL: OnceCell<Pool<Postgres>> = OnceCell::new();
@@ -25,23 +25,28 @@ pub async fn init_db() {
         .password(&db_pass)
         .host(&db_host)
         .port(db_port.parse::<u16>().expect("Invalid DB_PORT"))
-        .database(&db_name);
+        .database(&db_name)
+        .disable_statement_logging();
 
-    match PgPoolOptions::new()
-        .max_connections(16)
-        .min_connections(4)
-        .max_lifetime(Duration::from_secs(20_000))
-        .idle_timeout(Duration::from_secs(5_000))
-        .connect_with(connect_options)
-        .await
-    {
-        Ok(pool) => {
-            DB_POOL.set(pool).expect("Failed to set DB_POOL");
-            info!("Database initialized success");
+    loop {
+        match PgPoolOptions::new()
+            .max_connections(16)
+            .min_connections(4)
+            .max_lifetime(Duration::from_secs(20_000))
+            .idle_timeout(Duration::from_secs(5_000))
+            .connect_with(connect_options.clone())
+            .await
+        {
+            Ok(pool) => {
+                DB_POOL.set(pool).expect("Failed to set DB_POOL");
+                info!("Database initialized success...");
+                break;
+            }
+            Err(err) => warn!("Failed to create connection pool: {}. Retrying...", err)
         }
-        Err(err) => panic!("Failed to create connection pool: {}", err),
     }
 }
+
 
 pub fn get_pool() -> &'static Pool<Postgres> {
     DB_POOL.get().expect("Database pool is not initialized")

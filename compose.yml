@@ -1,3 +1,11 @@
+volumes:
+  actix-db-data:
+    driver: local
+
+networks:
+  dev_nk:
+    driver: bridge
+
 services:
   
   actix-db:
@@ -10,6 +18,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     volumes:
+      - actix-db-data:/var/lib/postgresql/data
       - ./src/main/storage/migrations:/docker-entrypoint-initdb.d/
     restart: unless-stopped
     healthcheck:
@@ -38,6 +47,3 @@ services:
     ports:
       - "8080:8080"
 
-networks:
-  dev_nk:
-    driver: bridge

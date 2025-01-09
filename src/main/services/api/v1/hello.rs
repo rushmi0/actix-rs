@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 use actix_web::{get, web, HttpResponse, Responder};
-use miniserde::{json, Serialize};
+use serde::Serialize;
 use crate::module::greet;
 
 #[derive(Serialize)]
@@ -22,9 +22,8 @@ pub async fn hello_service(name: web::Path<String>) -> impl Responder {
         message: greeting_message,
     };
 
-    let serialized_response = json::to_string(&response);
 
     HttpResponse::Ok()
         .content_type("application/json")
-        .body(serialized_response)
+        .json(response)
 }

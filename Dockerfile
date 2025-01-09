@@ -5,6 +5,9 @@ COPY ./src ./src
 COPY Cargo.toml Cargo.lock ./
 
 RUN cargo build --release
+RUN ls -l /builder/target/release/
+
+
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
